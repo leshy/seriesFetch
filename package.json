@@ -7,6 +7,7 @@
     "@types/jest": "^23.3.13",
     "gts": "^0.9.0",
     "jest": ">=22 <24",
+    "jest-coverage-badges": "^1.1.2",
     "prettify": "^0.1.7",
     "ts-jest": "^23.10.5",
     "typescript": "~3.1.0"
@@ -18,7 +19,7 @@
     "watch": "tsc -w",
     "fix": "gts fix",
     "test": "npx jest",
-    "coverage": "npx jest --collectCoverage",
+    "coverage": "npx jest --collectCoverage; npx jest-coverage-badges",
     "test:watch": "npx jest --watch"
   },
   "dependencies": {

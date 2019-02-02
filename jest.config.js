@@ -4,6 +4,9 @@ module.exports = {
     "<rootDir>/src"
   ],
   testEnvironment: 'node',
+  "coverageReporters": [
+    "json-summary"
+  ],
   moduleFileExtensions: [
     "ts",
     "tsx",
