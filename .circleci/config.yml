@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:7.10
+      - image: circleci/node
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -35,7 +35,7 @@ jobs:
           
       - run:
           name: install npx
-          command: yarn global add npx
+          command: sudo yarn global add npx
         
       # run tests!
       - run: yarn test
