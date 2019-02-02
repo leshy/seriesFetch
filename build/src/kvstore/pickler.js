@@ -4,13 +4,14 @@ const fs_1 = require("fs");
 const { readFile, writeFile } = fs_1.promises;
 class Pickler {
     constructor(fileName) {
-        this.initialize = () => {
-            fs_1.existsSync(this.fileName)
+        this.init = () => {
+            return fs_1.existsSync(this.fileName)
                 ? readFile(this.fileName)
                     .then(String)
                     .then(JSON.parse)
                     .then(data => (this.data = data))
-                : null;
+                    .then(() => this)
+                : new Promise((resolve, reject) => resolve(this));
         };
         this.save = () => writeFile(this.fileName, JSON.stringify(this.data));
         this.set = (key, value) => {

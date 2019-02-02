@@ -5,7 +5,7 @@ export declare class Pickler implements KVStore {
         [key: string]: any;
     };
     constructor(fileName: string);
-    initialize: () => void;
+    init: () => Promise<Pickler>;
     save: () => Promise<any>;
     set: <T>(key: string, value: T) => Promise<T>;
     get: (key: string) => any;

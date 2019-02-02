@@ -11,15 +11,15 @@ export class Pickler implements KVStore {
     this.data = {}
   }
 
-  initialize = (): Promise<Pickler> =>
-    existsSync(this.fileName)
+  init = (): Promise<Pickler> => {
+    return existsSync(this.fileName)
       ? readFile(this.fileName)
         .then(String)
         .then(JSON.parse)
         .then(data => (this.data = data))
         .then(() => this)
       : new Promise((resolve, reject) => resolve(this))
-
+  }
   save = (): Promise<any> => writeFile(this.fileName, JSON.stringify(this.data))
 
   set = <T>(key: string, value: T): Promise<T> => {

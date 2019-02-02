@@ -1,34 +1,27 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = require("fs");
-const bluebird_1 = require("bluebird");
-class Pickler {
-    constructor(fileName) {
-        this.save = () => fs_1.writeFileSync(this.fileName, JSON.stringify(this.data));
-        this.set = (key, value) => {
-            this.data[key] = value;
-            this.save();
-            return value;
-        };
-        this.get = (key) => this.data[key];
-        this.fileName = fileName;
-        this.data = JSON.parse(String(fs_1.readFileSync(fileName)));
-    }
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-exports.Pickler = Pickler;
+Object.defineProperty(exports, "__esModule", { value: true });
+const p = require("bluebird");
+__export(require("./kvstore/pickler"));
 const getTime = (dataPoint) => dataPoint[0];
 const getData = (dataPoint) => dataPoint[1];
 const call = (method) => (obj) => obj[method];
 class seriesFetch {
-    constructor(stateStore, tsStore, fetchers) {
-        this.startFetchers = () => bluebird_1.all(this.fetchers.map((fetcher) => this.fetch(fetcher)))
-            .then(res => res.length);
-        this.fetch = (fetcher) => this.stateStore.get(fetcher.name)
+    constructor(kvStore, tsStore, fetchers) {
+        this.initialize = () => p.props({
+            tsStore: this.tsStore.init(),
+            kvStore: this.kvStore.init(),
+        });
+        this.startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetch(fetcher)));
+        this.fetch = (fetcher) => this.kvStore
+            .get(fetcher.name)
             .then((lastTime) => fetcher.fetch(lastTime))
-            .then((data) => data.length ? this.tsStore.set(fetcher.name, data) : data)
-            .then((data) => data.length ? this.stateStore.set(fetcher.name, getTime(data[-1])) : data);
+            .then((data) => this.tsStore.set(fetcher.name, data))
+            .then((data) => this.kvStore.set(fetcher.name, getTime(data[-1])));
         this.tsStore = tsStore;
-        this.stateStore = stateStore;
+        this.kvStore = kvStore;
         this.fetchers = fetchers;
     }
 }

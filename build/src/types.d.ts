@@ -11,9 +11,11 @@ export interface Fetcher {
     fetch: FetchFunction;
 }
 export interface KVStore {
+    init(): Promise<KVStore>;
     set<T>(key: String, value: T): Promise<T>;
     get(key: String): Promise<any>;
 }
 export interface TSStore {
+    init(): Promise<TSStore>;
     set(seriesName: String, seriesData: DataArray): Promise<DataArray>;
 }

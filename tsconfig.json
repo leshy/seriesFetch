@@ -5,10 +5,9 @@
     "outDir": "build"
   },
   "lib": "es2015",
+  "exclude": [ "src/**/__tests__/*" ],
   "include": [
     "src/*.ts",
-    "src/**/*.ts",
-    "test/*.ts",
-    "test/**/*.ts"
+    "src/**/*.ts"
   ]
 }
