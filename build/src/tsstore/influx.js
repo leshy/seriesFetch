@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const influx_1 = require("influx");
-console.log('InfluxDB', influx_1.InfluxDB);
 class Influx {
-    constructor(host, database, measurement) {
+    constructor({ host = 'localhost', database, measurement }) {
         this.init = () => new Promise((resolve, reject) => this);
         this.set = (seriesName, seriesData) => new Promise((resolve, reject) => {
             this.influx.writePoints([

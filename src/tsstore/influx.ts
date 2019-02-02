@@ -1,17 +1,22 @@
 import { DataArray, TSStore, Fetcher, FetchFunction } from '../types'
 import { InfluxDB, FieldType } from 'influx'
 
-console.log('InfluxDB', InfluxDB)
-
 interface InfluxConfig {
   host: string
   database: string
 }
 
+interface IConstructorArg {
+  host?: String
+  port?: Number
+  database: String
+  measurement: String
+}
+
 export class Influx implements TSStore {
   influx: InfluxDB
 
-  constructor(host: String, database: String, measurement: String) {
+  constructor({ host = 'localhost', database, measurement }: IConstructorArg) {
     const config = {
       host: host,
       database: database,
@@ -20,7 +25,7 @@ export class Influx implements TSStore {
     this.influx = new InfluxDB(config as InfluxConfig)
   }
 
-  init = (): Promise<Influx> => new Promise((resolve, reject) => this)
+  init = (): Promise<Influx> => new Promise((resolve, reject) => resolve(this))
 
   set = (seriesName: String, seriesData: DataArray): Promise<DataArray> =>
     new Promise((resolve, reject) => {

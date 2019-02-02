@@ -18,6 +18,7 @@
     "watch": "tsc -w",
     "fix": "gts fix",
     "test": "npx jest",
+    "coverage": "npx jest --collectCoverage",
     "test:watch": "npx jest --watch"
   },
   "dependencies": {

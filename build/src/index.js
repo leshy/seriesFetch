@@ -8,9 +8,9 @@ __export(require("./kvstore/pickler"));
 const getTime = (dataPoint) => dataPoint[0];
 const getData = (dataPoint) => dataPoint[1];
 const call = (method) => (obj) => obj[method];
-class seriesFetch {
-    constructor(kvStore, tsStore, fetchers) {
-        this.initialize = () => p.props({
+class SeriesFetch {
+    constructor({ tsStore, kvStore, fetchers }) {
+        this.init = () => p.props({
             tsStore: this.tsStore.init(),
             kvStore: this.kvStore.init(),
         });
@@ -25,4 +25,5 @@ class seriesFetch {
         this.fetchers = fetchers;
     }
 }
+exports.SeriesFetch = SeriesFetch;
 //# sourceMappingURL=index.js.map

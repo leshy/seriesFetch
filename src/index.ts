@@ -17,22 +17,30 @@ const getData = (dataPoint: DataPoint): Data => dataPoint[1]
 
 const call = (method: string) => (obj: any) => obj[method]
 
-class seriesFetch {
+interface IConstructorArg {
+  kvStore: KVStore
+  tsStore: TSStore
+  fetchers: Array<Fetcher>
+}
+
+export class SeriesFetch {
   kvStore: KVStore
   tsStore: TSStore
   fetchers: Array<Fetcher>
 
-  constructor(kvStore: KVStore, tsStore: TSStore, fetchers: Array<Fetcher>) {
+  constructor({ tsStore, kvStore, fetchers }: IConstructorArg) {
     this.tsStore = tsStore
     this.kvStore = kvStore
     this.fetchers = fetchers
   }
 
-  initialize = () =>
-    p.props({
-      tsStore: this.tsStore.init(),
-      kvStore: this.kvStore.init(),
-    })
+  init = () =>
+    p
+      .props({
+        tsStore: this.tsStore.init(),
+        kvStore: this.kvStore.init(),
+      })
+      .then(() => this)
 
   startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetch(fetcher)))
 
