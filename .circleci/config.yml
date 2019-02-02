@@ -32,6 +32,10 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+          
+      - run:
+          name: install npx
+          command: yarn global add npx
         
       # run tests!
       - run: yarn test
