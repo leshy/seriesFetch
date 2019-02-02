@@ -2,29 +2,23 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const influx_1 = require("influx");
 console.log('InfluxDB', influx_1.InfluxDB);
-// interface InfluxConfig {
-//	host: String
-//	database: String
-// }
-// export class Influx implements TSStore {
-//	config: InfluxConfig
-//	influx: InfluxDB
-//	constructor(host: String, database: String, measurement: String) {
-//		this.config = {
-//			host: host,
-//			database: database,
-//		}
-//		this.influx = new InfluxDb(this.config)
-//	}
-//	set = (seriesName: String, seriesData: DataArray): Promise<DataArray> =>
-//		new Promise((resolve, reject) => {
-//			this.influx.writePoints([
-//				{
-//					measurement: 'perf',
-//					tags: { host: 'box1.example.com' },
-//					fields: { cpu: getCpuUsage(), mem: getMemUsage() },
-//				}
-//			])
-//		}
-// }
+class Influx {
+    constructor(host, database, measurement) {
+        this.set = (seriesName, seriesData) => new Promise((resolve, reject) => {
+            this.influx.writePoints([
+                {
+                    measurement: 'perf',
+                    // tags: { host: 'box1.example.com' },
+                    fields: { seriesName: seriesData }
+                }
+            ]);
+        });
+        const config = {
+            host: host,
+            database: database,
+        };
+        this.influx = new influx_1.InfluxDB(config);
+    }
+}
+exports.Influx = Influx;
 //# sourceMappingURL=influxTSstore.js.map

@@ -11,19 +11,9 @@ export interface Fetcher {
     fetch: FetchFunction;
 }
 export interface KVStore {
-    set<T>(key: String, value: T): Promise<T> | T;
-    get(key: String): Promise<any> | any;
+    set<T>(key: String, value: T): Promise<T>;
+    get(key: String): Promise<any>;
 }
 export interface TSStore {
     set(seriesName: String, seriesData: DataArray): Promise<DataArray>;
-}
-export declare class Pickler implements KVStore {
-    fileName: string;
-    data: {
-        [key: string]: any;
-    };
-    constructor(fileName: string);
-    save: () => void;
-    set: <T>(key: string, value: T) => T;
-    get: (key: string) => any;
 }

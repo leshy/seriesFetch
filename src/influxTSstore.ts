@@ -4,30 +4,31 @@ import { InfluxDB, FieldType } from 'influx'
 console.log('InfluxDB', InfluxDB)
 
 interface InfluxConfig {
-	host: String
-	database: String
+  host: string
+  database: string
 }
 
 export class Influx implements TSStore {
-	influx: InfluxDB
+  influx: InfluxDB
 
-	constructor(host: String, database: String, measurement: String) {
-		const config = {
-			host: host,
-			database: database,
-		}
+  constructor(host: String, database: String, measurement: String) {
 
-		this.influx = new InfluxDb(config)
-	}
+    const config = {
+      host: host,
+      database: database,
+    }
 
-	set = (seriesName: String, seriesData: DataArray): Promise<DataArray> =>
-		new Promise((resolve, reject) => {
-			this.influx.writePoints([
-				{
-					measurement: 'perf',
-					// tags: { host: 'box1.example.com' },
-					fields: { seriesName: seriesData }
-				}
-			])
-		})
+    this.influx = new InfluxDB(config as InfluxConfig)
+  }
+
+  set = (seriesName: String, seriesData: DataArray): Promise<DataArray> =>
+    new Promise((resolve, reject) => {
+      this.influx.writePoints([
+        {
+          measurement: 'perf',
+          // tags: { host: 'box1.example.com' },
+          fields: { seriesName: seriesData }
+        }
+      ])
+    })
 }

@@ -4,7 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^23.3.13",
     "gts": "^0.9.0",
+    "jest": ">=22 <24",
+    "prettify": "^0.1.7",
+    "ts-jest": "^23.10.5",
     "typescript": "~3.1.0"
   },
   "scripts": {
@@ -13,9 +17,8 @@
     "compile": "tsc -p .",
     "watch": "tsc -w",
     "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run check"
+    "test": "npx jest",
+    "test:watch": "npx jest watch"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.25",
@@ -23,6 +26,8 @@
     "@types/node": "^10.12.18",
     "bluebird": "^3.5.3",
     "influx": "^5.0.7",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "nodeunit": "^0.11.3",
+    "prettier": "^1.16.3"
   }
 }
