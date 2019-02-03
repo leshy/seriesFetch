@@ -1,13 +1,8 @@
 "use strict";
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
 Object.defineProperty(exports, "__esModule", { value: true });
 const p = require("bluebird");
-__export(require("./kvstore/pickler"));
-const getTime = (dataPoint) => dataPoint[0];
-const getData = (dataPoint) => dataPoint[1];
-const call = (method) => (obj) => obj[method];
+exports.getTime = (dataPoint) => dataPoint[0];
+exports.getData = (dataPoint) => dataPoint[1];
 class SeriesFetch {
     constructor({ tsStore, kvStore, fetchers }) {
         this.init = () => p
@@ -17,12 +12,13 @@ class SeriesFetch {
         })
             .then(() => this);
         this.startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetch(fetcher)));
+        this.stopFetchers = () => true;
         this.fetch = (fetcher) => this.kvStore
             .get(fetcher.name)
             .then((lastTime) => fetcher.fetch(lastTime))
             .then((data) => this.tsStore.set(fetcher.name, data))
             .then((data) => {
-            return this.kvStore.set(fetcher.name, getTime(data[data.length - 1]));
+            return this.kvStore.set(fetcher.name, exports.getTime(data[data.length - 1]));
         });
         this.tsStore = tsStore;
         this.kvStore = kvStore;

@@ -10,12 +10,8 @@ import {
   DataArray,
 } from './types'
 
-export * from './kvstore/pickler'
-
-const getTime = (dataPoint: DataPoint): Time => dataPoint[0]
-const getData = (dataPoint: DataPoint): Data => dataPoint[1]
-
-const call = (method: string) => (obj: any) => obj[method]
+export const getTime = (dataPoint: DataPoint): Time => dataPoint[0]
+export const getData = (dataPoint: DataPoint): Data => dataPoint[1]
 
 interface IConstructorArg {
   kvStore: KVStore
@@ -43,6 +39,8 @@ export class SeriesFetch {
       .then(() => this)
 
   startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetch(fetcher)))
+
+  stopFetchers = () => true
 
   fetch = (fetcher: Fetcher): Promise<any> =>
     this.kvStore

@@ -1,4 +1,4 @@
-import { SeriesFetch } from '../index'
+import { SeriesFetch, getTime, getData } from '../index'
 import { Memory } from '../kvstore/memory'
 import { Fetcher, Time, DataArray, TSStore } from '../types'
 import { Influx } from '../tsstore/influx'
@@ -13,24 +13,46 @@ class MockTSStore implements TSStore {
 
 const DATE1 = new Date(1549200686276)
 const DATE2 = new Date(1549200688049)
+const MOCKDATA: DataArray = [[DATE1, 33], [DATE2, 41]]
 
 class MockFetcher implements Fetcher {
   readonly name = 'mockFetcher'
   readonly refreshTime = 1000
 
   fetch = (from: Time): Promise<DataArray> =>
-    new Promise((resolve, reject) => resolve([[DATE1, 33], [DATE2, 41]]))
+    new Promise((resolve, reject) => resolve(MOCKDATA))
 }
 
-test('test init', () => {
+describe('general', () => {
+  test('getTime', () => expect(getTime(MOCKDATA[0])).toEqual(DATE1))
+
+  test('getData', () => expect(getData(MOCKDATA[0])).toEqual(33))
+})
+
+describe('seriesFetch', () => {
+  let seriesFetch: SeriesFetch
   const memStore = new Memory()
-  return new SeriesFetch({
-    kvStore: memStore,
-    tsStore: new MockTSStore(),
-    fetchers: [],
+
+  test('instantiate', () => {
+    seriesFetch = new SeriesFetch({
+      kvStore: memStore,
+      tsStore: new MockTSStore(),
+      fetchers: [],
+    })
   })
-    .init()
-    .then(seriesFetch => seriesFetch.fetch(new MockFetcher()))
-    .then(() => memStore.get('mockFetcher'))
-    .then(data => expect(data).toEqual(DATE2))
+
+  test('initialize', () => seriesFetch.init())
+
+  test('fetch', () =>
+    seriesFetch
+      .fetch(new MockFetcher())
+      .then(() => memStore.get('mockFetcher'))
+      .then(data => expect(data).toEqual(DATE2)))
+
+  test('startFetchers', () =>
+    seriesFetch
+      .startFetchers()
+      .then(() => memStore.get('mockFetcher'))
+      .then(data => expect(data).toEqual(DATE2))
+      .then(() => seriesFetch.stopFetchers()))
 })

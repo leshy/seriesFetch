@@ -15,7 +15,7 @@
   "scripts": {
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "tsc -p .",
+    "build": "tsc -p .",
     "watch": "tsc -w",
     "fix": "gts fix",
     "test": "npx jest",
