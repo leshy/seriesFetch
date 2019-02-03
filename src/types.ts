@@ -7,18 +7,18 @@ export type DataArray = Array<DataPoint>
 export type FetchFunction = (from: Time) => Promise<DataArray>
 
 export interface Fetcher {
-  name: String
-  refreshTime: Number
+  name: string
+  refreshTime: number
   fetch: FetchFunction
 }
 
 export interface KVStore {
   init(): Promise<KVStore>
-  set<T>(key: String, value: T): Promise<T>
-  get(key: String): Promise<any>
+  set<T>(key: string, value: T): Promise<T>
+  get(key: string): Promise<any>
 }
 
 export interface TSStore {
   init(): Promise<TSStore>
-  set(seriesName: String, seriesData: DataArray): Promise<DataArray>
+  set(seriesName: string, seriesData: DataArray): Promise<DataArray>
 }

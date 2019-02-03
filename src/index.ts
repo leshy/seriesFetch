@@ -1,5 +1,6 @@
 import * as p from 'bluebird'
-import { map, last } from 'lodash'
+import * as dateFns from 'date-fns'
+import { map, last, mapValues } from 'lodash'
 import {
   DataPoint,
   Time,
@@ -12,6 +13,8 @@ import {
 
 export const getTime = (dataPoint: DataPoint): Time => dataPoint[0]
 export const getData = (dataPoint: DataPoint): Data => dataPoint[1]
+export const getLast = (data: DataArray): DataPoint => data[data.length - 1]
+export const getLastTime = (data: DataArray): Time => getTime(getLast(data))
 
 interface IConstructorArg {
   kvStore: KVStore
@@ -23,11 +26,13 @@ export class SeriesFetch {
   kvStore: KVStore
   tsStore: TSStore
   fetchers: Array<Fetcher>
+  timers: { [s: string]: NodeJS.Timer }
 
   constructor({ tsStore, kvStore, fetchers }: IConstructorArg) {
     this.tsStore = tsStore
     this.kvStore = kvStore
     this.fetchers = fetchers
+    this.timers = {}
   }
 
   init = () =>
@@ -36,18 +41,33 @@ export class SeriesFetch {
         tsStore: this.tsStore.init(),
         kvStore: this.kvStore.init(),
       })
-      .then(() => this)
+      .then(() => (this.timers = {}))
 
   startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetch(fetcher)))
 
-  stopFetchers = () => true
+  stopFetchers = () => mapValues(this.timers, timer => clearTimeout(timer))
 
-  fetch = (fetcher: Fetcher): Promise<any> =>
-    this.kvStore
-      .get(fetcher.name)
-      .then((lastTime: Time) => fetcher.fetch(lastTime))
+  maybeGetFetchTime = (fetcher: Fetcher, lastTime?: Time): Promise<Time> =>
+    lastTime
+      ? new Promise((resolve, reject) => resolve(lastTime))
+      : this.kvStore
+        .get(fetcher.name)
+        .then((lastTime: Time) =>
+          lastTime ? lastTime : dateFns.subYears(new Date(), 1),
+        )
+
+  fetch = (fetcher: Fetcher, lastTime?: Time): Promise<any> =>
+    this.maybeGetFetchTime(fetcher, lastTime)
+      .then(lastTime => fetcher.fetch(lastTime))
       .then((data: DataArray) => this.tsStore.set(fetcher.name, data))
-      .then((data: DataArray) => {
-        return this.kvStore.set(fetcher.name, getTime(data[data.length - 1]))
-      })
+      .then((data: DataArray) =>
+        this.kvStore.set(fetcher.name, getLastTime(data)),
+      )
+      .then(
+        lastTime =>
+          (this.timers[fetcher.name] = setTimeout(
+            () => this.fetch(fetcher, lastTime),
+            fetcher.refreshTime,
+          )),
+      )
 }
