@@ -34,7 +34,6 @@
     "prettier": "^1.16.3"
   },
  "pre-commit": [
-   "test",
    "coverage"
  ]
 }
