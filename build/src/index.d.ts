@@ -14,13 +14,15 @@ export declare class SeriesFetch {
     tsStore: TSStore;
     fetchers: Array<Fetcher>;
     timers: {
-        [s: string]: NodeJS.Timer;
+        [s: string]: NodeJS.Timer | Boolean;
     };
     constructor({ tsStore, kvStore, fetchers }: IConstructorArg);
     init: () => p<{}>;
-    startFetchers: () => p<any[]>;
-    stopFetchers: () => import("lodash").Dictionary<void>;
-    maybeGetFetchTime: (fetcher: Fetcher, lastTime?: Date | undefined) => Promise<Date>;
+    startFetchers: () => p<void[]>;
+    stopFetchers: () => void;
+    getFetchTime: (fetcher: Fetcher, lastTime?: Date | undefined) => Promise<Date>;
     fetch: (fetcher: Fetcher, lastTime?: Date | undefined) => Promise<any>;
+    fetchLoop: (fetcher: Fetcher, lastTime?: Date | undefined) => Promise<void>;
+    maybeSchedule: (fetcher: Fetcher, lastTime?: Date | undefined) => void;
 }
 export {};

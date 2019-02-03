@@ -15,18 +15,35 @@ class SeriesFetch {
             kvStore: this.kvStore.init(),
         })
             .then(() => (this.timers = {}));
-        this.startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetch(fetcher)));
-        this.stopFetchers = () => lodash_1.mapValues(this.timers, timer => clearTimeout(timer));
-        this.maybeGetFetchTime = (fetcher, lastTime) => lastTime
+        this.startFetchers = () => p.all(this.fetchers.map(fetcher => this.fetchLoop(fetcher)));
+        this.stopFetchers = () => {
+            lodash_1.mapValues(this.timers, timer => {
+                if (timer instanceof Boolean) {
+                    return;
+                }
+                clearTimeout(timer);
+            });
+        };
+        this.getFetchTime = (fetcher, lastTime) => lastTime
             ? new Promise((resolve, reject) => resolve(lastTime))
             : this.kvStore
                 .get(fetcher.name)
                 .then((lastTime) => lastTime ? lastTime : dateFns.subYears(new Date(), 1));
-        this.fetch = (fetcher, lastTime) => this.maybeGetFetchTime(fetcher, lastTime)
+        this.fetch = (fetcher, lastTime) => this.getFetchTime(fetcher, lastTime)
             .then(lastTime => fetcher.fetch(lastTime))
             .then((data) => this.tsStore.set(fetcher.name, data))
-            .then((data) => this.kvStore.set(fetcher.name, exports.getLastTime(data)))
-            .then(lastTime => (this.timers[fetcher.name] = setTimeout(() => this.fetch(fetcher, lastTime), fetcher.refreshTime)));
+            .then((data) => this.kvStore.set(fetcher.name, exports.getLastTime(data)));
+        this.fetchLoop = (fetcher, lastTime) => {
+            if (this.timers[fetcher.name] != null) {
+            }
+            return this.fetch(fetcher, lastTime).then(lastTime => this.maybeSchedule(fetcher, lastTime));
+        };
+        this.maybeSchedule = (fetcher, lastTime) => {
+            if (this.timers[fetcher.name] === false) {
+                return;
+            }
+            this.timers[fetcher.name] = setTimeout(() => this.fetchLoop(fetcher, lastTime), fetcher.refreshTime);
+        };
         this.tsStore = tsStore;
         this.kvStore = kvStore;
         this.fetchers = fetchers;

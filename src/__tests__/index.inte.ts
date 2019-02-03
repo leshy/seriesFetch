@@ -6,6 +6,7 @@ import { Influx } from '../tsstore/influx'
 describe('seriesFetch', () => {
   let seriesFetch: SeriesFetch
   const memStore = new Memory()
+  const fetcher = new MockFetcher()
 
   test('instantiate', () => {
     seriesFetch = new SeriesFetch({
@@ -17,16 +18,38 @@ describe('seriesFetch', () => {
 
   test('initialize', () => seriesFetch.init())
 
+  test('getFetchTime', () =>
+    seriesFetch
+      .getFetchTime(fetcher)
+      .then(time => expect(time.constructor).toEqual(Date)))
+
+  test('getFetchTime2', () =>
+    seriesFetch
+      .getFetchTime(fetcher, DATE1)
+      .then(time => expect(time).toEqual(DATE1)))
+
   test('fetch', () =>
     seriesFetch
-      .fetch(new MockFetcher())
+      .fetch(fetcher)
       .then(() => memStore.get('mockFetcher'))
       .then(data => expect(data).toEqual(DATE2)))
+
+  test('ensure storage', () =>
+    expect(memStore.data).toEqual({ mockFetcher: DATE2 }))
+
+  test('fetchLoop', () =>
+    seriesFetch
+      .fetchLoop(fetcher)
+      .then(() => memStore.get('mockFetcher'))
+      .then(data => expect(data).toEqual(DATE2)))
+
+  test('stopFetchers1', () => seriesFetch.stopFetchers())
 
   test('startFetchers', () =>
     seriesFetch
       .startFetchers()
       .then(() => memStore.get('mockFetcher'))
-      .then(data => expect(data).toEqual(DATE2))
-      .then(() => seriesFetch.stopFetchers()))
+      .then(data => expect(data).toEqual(DATE2)))
+
+  test('stopFetchers2', () => seriesFetch.stopFetchers())
 })
