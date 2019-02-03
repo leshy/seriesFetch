@@ -1,7 +1,6 @@
 export type Time = Date
-export interface Data {
-  [key: string]: number
-}
+
+export type Data = any
 export type DataPoint = [Time, Data]
 export type DataArray = Array<DataPoint>
 

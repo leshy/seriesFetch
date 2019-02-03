@@ -10,6 +10,6 @@ export declare class Influx implements TSStore {
     influx: InfluxDB;
     constructor({ host, database, measurement }: IConstructorArg);
     init: () => Promise<Influx>;
-    set: (seriesName: String, seriesData: [Date, import("../types").Data][]) => Promise<[Date, import("../types").Data][]>;
+    set: (seriesName: String, seriesData: [Date, any][]) => Promise<[Date, any][]>;
 }
 export {};

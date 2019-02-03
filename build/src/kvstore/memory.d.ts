@@ -1,12 +1,10 @@
 import { KVStore } from '../types';
-export declare class Pickler implements KVStore {
-    fileName: string;
+export declare class Memory implements KVStore {
     data: {
         [key: string]: any;
     };
-    constructor(fileName: string);
-    init: () => Promise<Pickler>;
-    save: () => Promise<any>;
+    constructor();
+    init: () => Promise<Memory>;
     set: <T>(key: string, value: T) => Promise<T>;
     get: (key: string) => Promise<any>;
 }

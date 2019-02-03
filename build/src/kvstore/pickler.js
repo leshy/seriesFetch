@@ -18,7 +18,7 @@ class Pickler {
             this.data[key] = value;
             return this.save().then(() => value);
         };
-        this.get = (key) => this.data[key];
+        this.get = (key) => new Promise((resolve, reject) => resolve(this.data[key]));
         this.fileName = fileName;
         this.data = {};
     }

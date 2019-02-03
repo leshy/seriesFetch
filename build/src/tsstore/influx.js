@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const influx_1 = require("influx");
 class Influx {
     constructor({ host = 'localhost', database, measurement }) {
-        this.init = () => new Promise((resolve, reject) => this);
+        this.init = () => new Promise((resolve, reject) => resolve(this));
         this.set = (seriesName, seriesData) => new Promise((resolve, reject) => {
             this.influx.writePoints([
                 {

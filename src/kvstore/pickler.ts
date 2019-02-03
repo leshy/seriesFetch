@@ -27,5 +27,6 @@ export class Pickler implements KVStore {
     return this.save().then(() => value)
   }
 
-  get = (key: string) => this.data[key]
+  get = (key: string): Promise<any> =>
+    new Promise((resolve, reject) => resolve(this.data[key]))
 }

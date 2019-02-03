@@ -49,7 +49,7 @@ export class SeriesFetch {
       .get(fetcher.name)
       .then((lastTime: Time) => fetcher.fetch(lastTime))
       .then((data: DataArray) => this.tsStore.set(fetcher.name, data))
-      .then((data: DataArray) =>
-        this.kvStore.set(fetcher.name, getTime(data[-1])),
-      )
+      .then((data: DataArray) => {
+        return this.kvStore.set(fetcher.name, getTime(data[data.length - 1]))
+      })
 }

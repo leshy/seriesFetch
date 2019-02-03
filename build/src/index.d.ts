@@ -11,10 +11,7 @@ export declare class SeriesFetch {
     tsStore: TSStore;
     fetchers: Array<Fetcher>;
     constructor({ tsStore, kvStore, fetchers }: IConstructorArg);
-    init: () => p<{
-        tsStore: TSStore;
-        kvStore: KVStore;
-    }>;
+    init: () => p<this>;
     startFetchers: () => p<any[]>;
     fetch: (fetcher: Fetcher) => Promise<any>;
 }
