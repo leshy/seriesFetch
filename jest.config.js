@@ -8,6 +8,7 @@ module.exports = {
     "text",
     "json-summary"
   ],
+  modulePathIgnorePatterns: [ 'mock' ],
   moduleFileExtensions: [
     "ts",
     "tsx",
