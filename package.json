@@ -4,13 +4,18 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@types/bluebird": "^3.5.25",
+    "@types/lodash": "^4.14.120",
+    "@types/node": "^10.12.18",
     "@types/jest": "^23.3.13",
     "gts": "^0.9.0",
     "jest": ">=22 <24",
     "jest-coverage-badges": "^1.1.2",
     "prettify": "^0.1.7",
     "ts-jest": "^23.10.5",
-    "typescript": "~3.1.0"
+    "typescript": "~3.1.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^1.16.3"
   },
   "scripts": {
     "check": "gts check",
@@ -18,23 +23,20 @@
     "build": "tsc -p .",
     "watch": "tsc -w",
     "fix": "gts fix",
-    "test": "npx jest",
+    "test": "npx jest --verbose false",
     "coverage": "npx jest --collectCoverage; npx jest-coverage-badges",
-    "test:watch": "npx jest --watch"
+    "test:watch": "npx jest --watch --verbose false"
   },
   "dependencies": {
-    "@types/bluebird": "^3.5.25",
-    "@types/lodash": "^4.14.120",
-    "@types/node": "^10.12.18",
     "bluebird": "^3.5.3",
     "date-fns": "^1.30.1",
     "influx": "^5.0.7",
-    "lodash": "^4.17.11",
-    "nodeunit": "^0.11.3",
-    "pre-commit": "^1.2.2",
-    "prettier": "^1.16.3"
+    "lodash": "^4.17.11"
   },
   "pre-commit": [
     "coverage"
-  ]
+  ],
+  "engines": {
+    "node": "11.*"
+  }
 }
